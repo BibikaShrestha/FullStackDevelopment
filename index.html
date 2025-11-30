@@ -1,55 +1,93 @@
 <!DOCTYPE html>
-<html>
- <head>
- 	<title> My portfolio </title>
- 	<link href="css/style.css" rel="stylesheet"></link>
- </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibika Shrestha Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
- <body>
- 	<header>
- 		<div class="intro">
- 			<h1> Bibika Shrestha </h1>
- 			<nav>
- 				<ul>
- 					<li><a href="#about"> About me </a></li>
- 					<li><a href="#project"> Projects </a></li>
- 					<li><a href="#contact"> Contact </a></li>
- 				</ul>
- 			</nav>
- 		</div>
- 	</header>
- 	<section id="about">
- 		<h1> About Me</h1>
-        <img src="">
- 		<p>My name is Bibika Shrestha.I am a student at Herald College Kathmandu, currently studying BSc.(hons)Computer Science.</p>
- 	
- 	</section>
- 	<section id="project">
- 		<h1> Project </h1>
- 		<div class="project-images">
- 			<img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/d6/96/36/photo4jpg.jpg?w=2200&h=800&s=1"/>
- 			<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRtNW-OXHYg9iVMgbP6TY9GDjyU68Gg640jw&s"/>
- 		</div>
- 	</section>
+<button class="menu-toggle" aria-expanded="false" aria-label="Toggle navigation" id="menu-button">
+    <!-- Hamburger icon can be a simple text or SVG -->
+        ☰
+    </button>
+    <nav id="nav-menu">
+    <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#project">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
 
+<header>
+    <video autoplay loop muted id="video-background"> 
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="intro">
+        <h1>Bibika Shrestha</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#project">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
- 	<section id="contact">
- 		<h1>Contact Me</h1>
- 		<form>
- 			<label> Full Name: </label>
- 			<input type="text" placeholder="Enter your name:" required>
+<section id="about">
+    <h1>About Me</h1>
+    <p>Hi! I am Bibika Shrestha, a passionate computer science student at Herald College Kathmandu. I love creating beautiful and functional websites and exploring new technologies.</p>
+</section>
 
- 			<label>Email: </label>
- 			<input type="email" placeholder="Email address" required>
+<section id="skills">
+    <h1>Skills</h1>
+    <div class="skills-grid">
+        <div class="skill">HTML & CSS</div>
+        <div class="skill">JavaScript</div>
+        <div class="skill">Python</div>
+        <div class="skill">Java</div>
+        <div class="skill">Data Science</div>
+        <div class="skill">Git & GitHub</div>
+    </div>
+</section>
 
- 			<label> Message:</label>
- 			<textarea placeholder="Enter your message:"></textarea>
+<section id="project">
+    <h1>Projects</h1>
+    <div class="project-images">
+        <div class="project-card">
+            <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/d6/96/36/photo4jpg.jpg?w=2200&h=800&s=1" alt="Project 1"/>
+            <div class="project-info">Project 1 Description</div>
+        </div>
+        <div class="project-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRtNW-OXHYg9iVMgbP6TY9GDjyU68Gg640jw&s" alt="Project 2"/>
+            <div class="project-info">Project 2 Description</div>
+        </div>
+    </div>
+</section>
 
- 			<button type="submit"> Submit </button>
- 		</form>
-	</section>
-     <footer>
-        <p>© <span id="year"></span> Bibika Shrestha. All rights reserved.</p>
-    </footer>
- </body>
+<section id="contact">
+    <h1>Contact Me</h1>
+    <form>
+        <input type="text" placeholder="Full Name"  id="name">
+        <input type="email" placeholder="Email Address"  id="email" >
+        <textarea id="messages" placeholder="Your Message" ></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+    <p id="message"></p>
+</section>
+
+<footer>
+    <p>© <span id="year"></span> Bibika Shrestha. All rights reserved.</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+
 </html>
