@@ -1,80 +1,114 @@
-document.getElementById('year').textContent = new Date().getFullYear();
+const API_URL = "http://localhost:3000/movies";
 
-const navLinks = document.querySelectorAll('nav ul li a');
+const movieListDiv = document.getElementById("movie-list");
+const searchInput = document.getElementById("search-input");
+const form = document.getElementById("add-movie-form");
+let allMovies = []; // Stores the full, unfiltered list of movies
+// Function to dynamically render movies to the HTML
+function renderMovies(moviesToDisplay) {
+  movieListDiv.innerHTML = "";
+  if (moviesToDisplay.length === 0) {
+    movieListDiv.innerHTML = "<p>No movies found matching your criteria.</p>";
+    return;
+  }
+  moviesToDisplay.forEach((movie) => {
+    const movieElement = document.createElement("div");
+    movieElement.classList.add("movie-item");
+    movieElement.innerHTML = `
+<p><strong>${movie.title}</strong> (${movie.year}) - ${movie.genre}</p>
+<button onclick="editMoviePrompt('${movie.id}', '${movie.title}', ${movie.year},
+'${movie.genre}')">Edit</button>
+<button onclick="deleteMovie('${movie.id}')">Delete</button>
+`;
+    movieListDiv.appendChild(movieElement);
+  });
+}
+// Function to fetch all movies and store them (READ)
+function fetchMovies() {
+  fetch(API_URL)
+    .then((response) => response.json())
+    .then((movies) => {
+      allMovies = movies; // Store the full list
+      renderMovies(allMovies); // Display the full list
+    })
+    .catch((error) => console.error("Error fetching movies:", error));
+}
+fetchMovies(); // Initial load
 
-navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').slice(1);
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            window.scrollTo({
-                top: targetSection.offsetTop - 50,
-                behavior: 'smooth'
-            });
-        }
-    });
+searchInput.addEventListener("input", function () {
+  const searchTerm = searchInput.value.toLowerCase();
+
+  // Filter the global 'allMovies' array based on title or genre match
+  const filteredMovies = allMovies.filter((movie) => {
+    const titleMatch = movie.title.toLowerCase().includes(searchTerm);
+    const genreMatch = movie.genre.toLowerCase().includes(searchTerm);
+    return titleMatch || genreMatch;
+  });
+  renderMovies(filteredMovies); // Display the filtered results
 });
 
-const sections = document.querySelectorAll('section');
-
-function fadeInOnScroll() {
-    const triggerBottom = window.innerHeight * 0.85;
-    sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        if(sectionTop < triggerBottom){
-            section.classList.add('visible');
-        } else {
-            section.classList.remove('visible');
-        }
-    });
-}
-
-const form= document.querySelector("form");
-const message= document.getElementById("message");
-form.addEventListener('submit', function(e){
-e.preventDefault();
-
-const name= document.getElementById("name");
-const email= document.getElementById("email");
-const messages= document.getElementById("messages");
-console.log(name,email,messages)
-if (name.value===""){
-     message.innerText= "Please enter your name"
-     message.style.color="red"
-
-}
-else if(email.value===""){
-    message.innerText= "Please enter your email"
-    message.style.color="red"
-}
-else if(messages.value===""){
-    message.innerText="Please enter a message."
-    message.style.color="red"
-}
-else{
-    message.innerText="Thankyou for your message..."
-    message.style.color="green"
-    form.reset();
-}
-})
-
-const menuButton = document.getElementById("menu-button");
-const navMenu = document.getElementById("nav-menu");
-
-menuButton.addEventListener("click", () => {
-    // Toggle .open on the navigation
-    navMenu.classList.toggle("open");
-
-    // Update the button icon
-    const isOpen = navMenu.classList.contains("open");
-    menuButton.textContent = isOpen ? "✖" : "☰";
-
-    // Update aria-expanded for accessibility
-    menuButton.setAttribute("aria-expanded", isOpen);
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const newMovie = {
+    title: document.getElementById("title").value,
+    genre: document.getElementById("genre").value,
+    year: parseInt(document.getElementById("year").value),
+  };
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newMovie),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to add movie");
+      return response.json();
+    })
+    .then(() => {
+      this.reset();
+      fetchMovies(); // Refresh the list
+    })
+    .catch((error) => console.error("Error adding movie:", error));
 });
-
-window.addEventListener('scroll', fadeInOnScroll);
-fadeInOnScroll();
-
-
+// Function to collect new data
+function editMoviePrompt(id, currentTitle, currentYear, currentGenre) {
+  const newTitle = prompt("Enter new Title:", currentTitle);
+  const newYearStr = prompt("Enter new Year:", currentYear);
+  const newGenre = prompt("Enter new Genre:", currentGenre);
+  if (newTitle && newYearStr && newGenre) {
+    const updatedMovie = {
+      id: id,
+      title: newTitle,
+      year: parseInt(newYearStr),
+      genre: newGenre,
+    };
+    updateMovie(id, updatedMovie);
+  }
+}
+// Function to send PUT request
+function updateMovie(movieId, updatedMovieData) {
+  fetch(`${API_URL}/${movieId}`, {
+    // Target the specific resource by ID
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedMovieData),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to update movie");
+      return response.json();
+    })
+    .then(() => {
+      fetchMovies(); // Refresh list
+    })
+    .catch((error) => console.error("Error updating movie:", error));
+}
+function deleteMovie(movieId) {
+  fetch(`${API_URL}/${movieId}`, {
+    // Target the specific resource by ID
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to delete movie");
+      fetchMovies(); // Refresh list
+    })
+    .catch((error) => console.error("Error deleting movie:", error));
+}
